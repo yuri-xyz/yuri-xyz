@@ -1,5 +1,3 @@
-<img src="./assets/header.png" />
-
 <p align="center">
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=ts,rust,react,nextjs,tailwind,git,electron,mysql,webflow,figma" />
@@ -23,21 +21,6 @@
 - Chess & strategy games.
 - Animals, nature, cats.
 - Learning about anything engineering-related (physics, mathematics, etc.).
-
-#### 🌟 GitHub Organizations & Projects
-
-<a href="https://github.com/codex-tooling/tails">
-  <img width="32" src="./assets/tails-project-logo.png" />
-</a>
-<a href="https://github.com/halfmoongames">
-  <img width="32" src="./assets/halfmoongames-org-logo.png" />
-</a>
-<a href="https://github.com/codex-tooling">
-  <img width="32" src="./assets/codex-tooling-org-logo.png" />
-</a>
-<a href="https://github.com/yurixander/mirage">
-  <img width="32" src="./assets/mirage-project-logo.png" />
-</a>
 
 <hr />
 
