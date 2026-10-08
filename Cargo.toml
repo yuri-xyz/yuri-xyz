@@ -1,0 +1,16 @@
+[package]
+name = "profile-art"
+version = "0.1.0"
+edition = "2024"
+description = "Offline renderer for the animated space scenes on the GitHub profile README"
+license = "MIT"
+publish = false
+
+[dependencies]
+image = { version = "0.25", default-features = false, features = ["png"] }
+rayon = "1.10"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1

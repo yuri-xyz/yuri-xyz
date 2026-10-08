@@ -1,0 +1,5 @@
+/target
+.claude/scheduled_tasks.lock
+result
+result-*
+.direnv/
