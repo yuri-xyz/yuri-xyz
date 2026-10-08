@@ -105,3 +105,28 @@ pub fn trace(origin: Vec3, dir: Vec3, disk_inner: f32, disk_outer: f32) -> Path 
     }
     path
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Rays parallel to the axis at impact parameter `b`, with the disk
+    /// moved out of the way.
+    fn captured(b: f32) -> bool {
+        trace(
+            Vec3::new(0.0, b, -80.0),
+            Vec3::new(0.0, 0.0, 1.0),
+            1e3,
+            1e3 + 1.0,
+        )
+        .captured
+    }
+
+    /// The shadow edge sits at the critical impact parameter 3√3 M.
+    #[test]
+    fn shadow_has_schwarzschild_radius() {
+        let critical = 3.0 * 3.0_f32.sqrt();
+        assert!(captured(critical * 0.97));
+        assert!(!captured(critical * 1.03));
+    }
+}

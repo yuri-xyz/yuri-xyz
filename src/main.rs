@@ -25,9 +25,15 @@ struct Options {
     out: PathBuf,
 }
 
-const USAGE: &str = "usage: profile-art <blackhole|galaxy> [--width N] [--height N] [--frames N] [--frame K] <out-dir>";
+const USAGE: &str = "usage: profile-art --list | <blackhole|galaxy> [--width N] [--height N] [--frames N] [--frame K] <out-dir>";
 
-fn parse_args() -> Result<Options, String> {
+enum Command {
+    /// Prints every scene name, one per line.
+    List,
+    Render(Options),
+}
+
+fn parse_args() -> Result<Command, String> {
     let mut opts = Options {
         scene: SceneKind::BlackHole,
         width: 960,
@@ -52,6 +58,7 @@ fn parse_args() -> Result<Options, String> {
             "--frames" => opts.frames = value("--frames")?,
             "--frame" => opts.only_frame = Some(value("--frame")?),
             "-h" | "--help" => return Err(USAGE.to_owned()),
+            "--list" => return Ok(Command::List),
             _ if arg.starts_with('-') => return Err(format!("unknown option {arg}\n{USAGE}")),
             _ if scene.is_none() => {
                 scene = Some(
@@ -71,7 +78,7 @@ fn parse_args() -> Result<Options, String> {
     if opts.only_frame.is_some_and(|k| k >= opts.frames) {
         return Err("--frame must be below --frames".to_owned());
     }
-    Ok(opts)
+    Ok(Command::Render(opts))
 }
 
 fn save(
@@ -118,7 +125,16 @@ fn run(opts: &Options) -> Result<(), String> {
 }
 
 fn main() -> ExitCode {
-    match parse_args().and_then(|opts| run(&opts)) {
+    let result = parse_args().and_then(|command| match command {
+        Command::List => {
+            for kind in SceneKind::ALL {
+                println!("{}", kind.name());
+            }
+            Ok(())
+        }
+        Command::Render(opts) => run(&opts),
+    });
+    match result {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
             eprintln!("{e}");

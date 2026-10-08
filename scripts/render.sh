@@ -9,7 +9,7 @@ out=${1:-assets}
 shift || true
 scenes=("$@")
 if (( ${#scenes[@]} == 0 )); then
-  scenes=(blackhole galaxy)
+  mapfile -t scenes < <(profile-art --list)
 fi
 frames=150
 delay_ms=33

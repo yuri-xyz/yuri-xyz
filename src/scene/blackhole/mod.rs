@@ -24,11 +24,11 @@ const VERTICAL_FOV_DEG: f32 = 24.0;
 /// light is invisible on a white page, so intensity maps to deeper, more
 /// opaque ink instead.
 const INK: [(f32, Vec3); 5] = [
-    (0.0, Vec3::new(1.0, 0.72, 0.45)),
-    (0.3, Vec3::new(0.98, 0.55, 0.16)),
-    (0.6, Vec3::new(0.90, 0.36, 0.08)),
-    (0.85, Vec3::new(0.70, 0.20, 0.05)),
-    (1.0, Vec3::new(0.50, 0.12, 0.04)),
+    (0.0, Vec3::new(1.0, 0.92, 0.76)),
+    (0.3, Vec3::new(0.95, 0.78, 0.50)),
+    (0.6, Vec3::new(0.82, 0.60, 0.32)),
+    (0.85, Vec3::new(0.62, 0.42, 0.20)),
+    (1.0, Vec3::new(0.38, 0.25, 0.12)),
 ];
 
 fn ink(light: Vec3) -> (Vec3, f32) {

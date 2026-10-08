@@ -127,17 +127,27 @@ pub fn composite(
         .collect();
     let page = theme.background();
     let night = Theme::Dark.background();
-    // Per-pixel night-sky weight under the scene (backdrop mode only).
-    let backdrop = match (theme, &style.light) {
+    // Per-pixel backdrop colour and weight under the scene (backdrop mode
+    // only). Toward its feathered rim the night sky takes on the scene's own
+    // average colour, so it fades out as a glow rather than a grey smudge.
+    let backdrop: Vec<(Vec3, f32)> = match (theme, &style.light) {
         (Theme::Light, &LightMode::Backdrop { feather }) => {
             let opacity: Vec<Vec3> = light
                 .iter()
                 .zip(transmittance)
                 .map(|(&l, &tr)| Vec3::new(1.0, 1.0, 1.0) * over_dark(l, tr).1)
                 .collect();
+            // Over the dark page, premultiplied colour is the light itself.
+            let tint = blur(&light, w, h, feather);
             blur(&opacity, w, h, feather)
                 .iter()
-                .map(|o| smoothstep(0.02, 0.35, o.x))
+                .zip(tint)
+                .map(|(o, t)| {
+                    let k = smoothstep(0.02, 0.35, o.x);
+                    let glow = t * (1.0 / o.x.max(1e-6));
+                    let depth = smoothstep(0.4, 1.0, k);
+                    (glow * (1.0 - depth) + night * depth, k)
+                })
                 .collect()
         }
         _ => Vec::new(),
@@ -151,8 +161,8 @@ pub fn composite(
             }
             (Theme::Light, &LightMode::Backdrop { .. }) => {
                 let (rgb, alpha) = over_dark(l, tr);
-                let k = backdrop[i];
-                (rgb, alpha, night * k + page * (1.0 - k))
+                let (sky, k) = backdrop[i];
+                (rgb, alpha, sky * k + page * (1.0 - k))
             }
             (Theme::Light, &LightMode::Ink { ink, occluder }) => {
                 let (ink, coverage) = ink(l);
