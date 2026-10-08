@@ -17,7 +17,19 @@
         "x86_64-linux"
         "aarch64-darwin"
       ];
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system nixpkgs.legacyPackages.${system});
+      # The renderer is proprietary (see LICENSE), so nixpkgs must be told to
+      # build this one unfree package; everything else stays free-only.
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs systems (
+          system:
+          f system (
+            import nixpkgs {
+              inherit system;
+              config.allowUnfreePredicate = pkg: nixpkgs.lib.getName pkg == "profile-art";
+            }
+          )
+        );
 
       mkCrate =
         pkgs:
@@ -38,7 +50,7 @@
               inherit cargoArtifacts;
               meta = {
                 description = "Offline renderer for the animated space scenes on the GitHub profile README";
-                license = pkgs.lib.licenses.mit;
+                license = pkgs.lib.licenses.unfree;
                 mainProgram = "profile-art";
                 platforms = systems;
               };

@@ -3,7 +3,7 @@ name = "profile-art"
 version = "0.1.0"
 edition = "2024"
 description = "Offline renderer for the animated space scenes on the GitHub profile README"
-license = "MIT"
+license-file = "LICENSE"
 publish = false
 
 [dependencies]
